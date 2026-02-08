@@ -1,0 +1,61 @@
+TINT Protocol Technical Architecture & Implementation Guide
+
+This document outlines the complete technology stack and implementation details of the TINT Protocol and SDK.
+
+---
+
+1. Frontend Application (Next.js 16)
+- Framework: Next.js 16 (App Router) with React 19 (Server Components).
+- Styling: Tailwind CSS v4 (using responsive design and dark mode).
+- State Management: React Hooks (useState, useEffect) for local state; URL search params for navigation state.
+- Wallet Connection: Custom implementation using `ethers.js v6` BrowserProvider (MetaMask/Injected).
+- Key Libraries:
+  - `lucide-react`: UI icons.
+  - `framer-motion`: (Conceptually used for UI transitions).
+  - `@vercel/analytics`: (Optional integration).
+
+2. TINT SDK (tint-protocol-ai-sdk)
+- Core Logic: Written in TypeScript, compiled to ESM and CJS using `tsup`.
+- AI Agent:
+  - Google Gemini AI (`@google/generative-ai`): Parses natural language prompts into structured JSON intents (SWAP, BRIDGE, TRANSFER).
+  - Fallback Mechanism: Regex-based parser for determinism when AI is rate-limited.
+- Cryptography:
+  - `@noble/curves` (secp256k1): Implements Elliptic Curve operations for Pedersen Commitments (Homomorphic Encryption).
+  - `@noble/hashes` (SHA3/Keccak): Secure hashing for commitment binding.
+- Blockchain Interaction:
+  - `ethers.js`: Management of wallets, signing transactions, and querying JSON-RPC nodes.
+  - `viem`: Lightweight, type-safe Ethereum interface used specifically for the Circle Bridge adapter.
+
+3. Blockchain & DeFi Integration
+- Uniswap V4:
+  - Custom Hooks: Implemented to verify TINT commitments on-chain before swapping.
+  - PoolManager: Direct interaction with the V4 singleton contract for liquidity and swaps.
+  - Routing: Custom "Smart Router" logic to find the best path across V4 pools.
+- Bridging (Circle CCTP):
+  - `@circle-fin/bridge-kit`: Client-side SDK for burn-and-mint cross-chain USDC transfers.
+  - `@circle-fin/adapter-viem-v2`: Adapter to connect user wallets to the Circle Bridge.
+- Yellow Network (State Channels):
+  - `@erc7824/nitrolite`: Protocol for opening high-speed P2P state channels.
+  - `yellow-ts`: Helper library for Yellow Network interactions.
+  - Netting: Off-chain aggregation of buy/sell orders significantly reduces gas costs by only settling the net difference.
+
+4. Backend Infrastructure (Serverless)
+- API Routes (Next.js):
+  - `/api/agent/intelligent`: Proxies AI requests to keep API keys secure (if needed).
+  - `/api/uniswap/swap`: Handles the complex logic of constructing V4 swap transactions.
+  - `/api/bridge/retry`: Server-side recovery mechanism for failed bridge transactions (relayer).
+  - `/api/yellow/*`: Manages state channel authentication and updates.
+
+5. Critical workflows
+- Intent Parsing: User input -> Gemini AI -> JSON Intent Object.
+- Commitment Generation: Amount + Randomness -> Pedersen Commitment (Hiding).
+- Netting Process:
+  1. Multiple intents collected in a batch.
+  2. Solvers calculate Net Amount = Total Buys - Total Sells.
+  3. A single transaction settles the Net Amount on Uniswap V4.
+- Bridging Recovery: If a client-side bridge tx fails (e.g. gas issue), the server detects the "Burn" event and retries the "Mint" on the destination chain using a relayer wallet.
+
+6. Deployment & CI/CD
+- Platform: Vercel (Optimized for Next.js).
+- Build System: `npm run build` triggers `next build` and `tsc`.
+- Type Safety: Rigorous TypeScript checks (with some shim overrides for edge-case libraries like @noble).

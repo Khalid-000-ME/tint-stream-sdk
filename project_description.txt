@@ -1,0 +1,28 @@
+TINT Protocol & SDK Project Description
+
+1. Project Overview: TINT Protocol
+TINT (Threshold Intent Netting & Transport) is the first privacy-preserving intent standard designed specifically for AI Agents and high-frequency automated trading. It solves the critical issues of front-running (MEV) and data leakage in DeFi by enabling "dark pool" style execution for on-chain assets.
+
+Core Value Proposition:
+- Privacy: Intents are cryptographically shielded using Pedersen Commitments (hiding amounts and strategies).
+- Efficiency: Orders are netted off-chain via Yellow Network state channels, meaning only the residual difference is settled on-chain.
+- Liquidity: Final settlement occurs on Uniswap V4, ensuring guaranteed execution depth.
+
+2. Architecture Highlights
+- Cryptography: Uses lightweight Zero-Knowledge proofs (Pedersen Commitments) to prove solvency without revealing trade details until settlement.
+- Network Layer: Built on Yellow Network's P2P state channels for millisecond-latency communication between agents and solvers.
+- Settlement Layer: Custom Uniswap V4 Hooks that verify the mathematical proofs on-chain before allowing the trade to proceed.
+- Cross-Chain: Integrated Circle Bridge Kit (CCTP) for seamless USDC bridging across Base, Arbitrum, and Ethereum.
+
+3. The TINT SDK (tint-protocol-ai-sdk)
+The SDK is the developer gateway to the protocol, enabling any application to integrate privacy-preserving AI agent capabilities.
+
+Key Features:
+- AI-Powered Intents: Integrated Google Gemini AI to parse natural language commands (e.g., "Swap 100 USDC for WETH on Base") into executable blockchain transactions.
+- Shielded Transactions: Automatically handles the complex cryptography required to generate and verify commitments.
+- Universal Bridging: Abstracts away the complexity of cross-chain transfers.
+- Netting Engine: Includes a client-side solver to compute net positions locally or verifiable off-chain.
+
+Current Version: v1.0.1
+Status: Production-ready for mainnet/testnet deployment.
+Documentation: comprehensive guides available for setup, bridging, and swapping.
