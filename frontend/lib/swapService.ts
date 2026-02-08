@@ -4,7 +4,9 @@ import { ethers } from 'ethers';
 const ERC20_ABI = [
     "function approve(address spender, uint256 amount) external returns (bool)",
     "function allowance(address owner, address spender) view returns (uint256)",
-    "function decimals() view returns (uint8)"
+    "function decimals() view returns (uint8)",
+    "function balanceOf(address account) view returns (uint256)",
+    "function transfer(address to, uint256 amount) returns (bool)"
 ];
 
 const POOL_SWAP_TEST_ABI = [
