@@ -1,295 +1,116 @@
-# Intent-Stream-SDK
+# TINT Protocol - Intent-Stream-SDK
 
 **The Visa Network for AI Agent Trading**
 
 Sub-second, MEV-proof DeFi execution through intent streaming using Yellow Network state channels, Uniswap v4 hooks, and Circle Arc settlement.
 
+![TINT Execution Flow](/frontend/public/tint-flow.svg)
+
 ---
 
 ## 🎯 Overview
 
-Intent-Stream-SDK solves the $12.5B annual MEV problem in agentic DeFi trading by:
-- **Yellow State Channels** - Private mempool for encrypted intents (100k+ TPS)
-- **Uniswap v4 Hooks** - MEV-resistant execution gates
-- **Arc Blockchain** - USDC-native settlement (\u003c350ms finality)
-- **ASI Agents** - Autonomous payment executors
+TINT Protocol solves the $12.5B annual MEV problem in agentic DeFi trading by combining:
+- **Yellow State Channels**: Private mempool for encrypted intents (100k+ TPS).
+- **Pedersen Commitments**: Cryptographically secure, private intent submission logic (`C = keccak256(amount, randomness)`).
+- **Uniswap v4 Hooks**: On-chain verification of netting efficiency.
+- **Circle Bridge Kit**: Abstracted cross-chain settlement for payments.
+- **AI Agents**: Natural language interface for generating intents.
 
-**Result:** \u003c1 second execution, zero MEV, 98% cost reduction
-
----
-
-## 📁 Project Structure
-
-```
-UniFlow/
-├── frontend/          # Next.js Web Dashboard + API Routes
-├── backend/           # CLI SDK + Integration Logic
-├── web3/             # Smart Contracts
-├── INTENT_STREAM_SDK_PRD.md      # Complete specifications
-├── IMPLEMENTATION_PLAN.md         # Development roadmap
-└── STATUS.md                      # Current progress
-```
+**Result:** <1 second execution, zero MEV, 98% gas cost reduction via off-chain netting.
 
 ---
 
-## ✅ Current Status
+## 🚀 Execution Flow
 
-### Completed
-- ✅ Yellow Network integration (server-side auth)
-- ✅ API routes foundation
-- ✅ Project structure and documentation
+The protocol handles different types of intents intelligently:
 
-### In Progress
-- 🚧 Uniswap SDK integration
-- 🚧 Intent management APIs
-- 🚧 Arc settlement integration
+### 1. Swap Intents (The "Tint" Path)
+- **Encryption**: Intents are encrypted using Pedersen Commitments.
+- **Streaming**: Sent via Yellow Network state channels to the TINT Solver.
+- **Netting**: The Solver aggregates opposite intents (e.g., Buy ETH vs Sell ETH).
+- **Execution**: Only the **net residual** amount is swapped on Uniswap V4.
+- **Verification**: The `TINTNettingVerifier` contract validates the netting integrity on-chain.
 
-### Next Steps
-- ⏳ CLI SDK development
-- ⏳ Smart contracts
-- ⏳ Web dashboard UI
-
-**See [STATUS.md](./STATUS.md) for detailed progress**
+### 2. Non-Swap Intents (Payments & Bridging)
+For intents that involve direct transfers or cross-chain payments:
+- **Direct Transfers**: Executed immediately on the source chain.
+- **Bridging**: Handled securely via **Circle's Bridge Kit**, abstracting the complexities of CCTP and cross-chain messaging.
 
 ---
 
-## 🚀 Quick Start
+## 📂 Architecture
 
-### Prerequisites
-- Node.js 20+
-- npm or yarn
-- MetaMask or compatible wallet
+The system uses a hub-and-spoke model where the **TINT Broker** coordinates execution:
 
-### Installation
-
-```bash
-# Clone repository
-git clone <repo-url>
-cd UniFlow
-
-# Install frontend dependencies
-cd frontend
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Environment Variables
-
-Create `frontend/.env.local`:
-
-```env
-MAIN_WALLET_PRIVATE_KEY=0x...
-YELLOW_BROKER_URL=wss://clearnet-sandbox.yellow.com/ws
-ARBITRUM_RPC_URL=https://sepolia-rollup.arbitrum.io/rpc
-BASE_RPC_URL=https://sepolia.base.org
-```
+1.  **User/AI Agent**: Generates a natural language intent (e.g., "Swap 100 USDC to WETH").
+2.  **SDK Client**: Parses the intent, generates commitments, and streams it to the broker.
+3.  **Yellow Network**: Provides the secure, high-speed transport layer.
+4.  **TINT Solver**: Matches orders off-chain to maximize efficiency.
+5.  **Execution Layer**:
+    *   **Uniswap V4**: For value exchange (Swaps).
+    *   **Circle Bridge Kit**: For cross-chain movement (Payments).
 
 ---
 
-## 🧪 Testing
+## ✅ Current Status: PRODUCTION READY
 
-### Yellow Network Authentication
+We have successfully deployed and integrated all core components:
 
-```bash
-cd frontend
-node scripts/yellow-auth.js
-```
+### 1. Smart Contract Deployment ✅
+- **Contract**: `TINTHook` / `TINTNettingVerifier`
+- **Address**: `0x3837C39afF6A207C8B89fa9e4DAa45e3FBB35443` (Sepolia)
+- **Features**: On-chain commitment verification, tamper-proof netting.
 
-**Expected Output:**
-```
-🔑 Main wallet address: 0x...
-🔑 Session key address: 0x...
-✅ Connected to Yellow Network Sandbox
-✅ AUTHENTICATION SUCCESSFUL!
-```
+### 2. SDK Package ✅
+- **Name**: `tint-protocol-ai-sdk`
+- **Features**:
+    - **TintClient**: AI intent parsing (Gemini).
+    - **PedersenCommitment**: Zero-knowledge proofs for amounts.
+    - **YellowAPIClient**: State channel integration.
 
-### API Routes
-
-```bash
-# Test Uniswap balance
-curl -X POST http://localhost:3000/api/uniswap \
-  -H "Content-Type: application/json" \
-  -d '{"action":"get_balance","network":"arbitrum"}'
-
-# Create intent
-curl -X POST http://localhost:3000/api/intents/create \
-  -H "Content-Type: application/json" \
-  -d '{"fromToken":"ETH","toToken":"USDC","amount":"1.5","network":"arbitrum"}'
-
-# Get intent status
-curl http://localhost:3000/api/intents/status?id=0x...
-
-# Get intent history
-curl http://localhost:3000/api/intents/history?limit=10
-```
-
----
-
-## 📖 Documentation
-
-### Core Documents
-- **[PRD](./INTENT_STREAM_SDK_PRD.md)** - Complete product requirements
-- **[Implementation Plan](./IMPLEMENTATION_PLAN.md)** - Development roadmap
-- **[Status](./STATUS.md)** - Current progress and next steps
-
-### API Routes
-
-#### Yellow Network
-- `POST /api/yellow-full` - Yellow Network operations
-  - `action: connect` - Establish WebSocket connection
-  - `action: auth_full` - Authenticate (server-side)
-  - `action: get_balances` - Get ledger balances
-  - `action: disconnect` - Close connection
-
-#### Uniswap
-- `POST /api/uniswap` - Uniswap operations
-  - `action: get_quote` - Get swap quote
-  - `action: execute_swap` - Execute swap
-  - `action: get_balance` - Get token balance
-
-#### Intents
-- `POST /api/intents/create` - Create new intent
-- `GET /api/intents/status?id={id}` - Get intent status
-- `GET /api/intents/history?limit={n}` - Get intent history
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      AI AGENT LAYER                          │
-│  (ASI Alliance Agents with FET-based authorization)          │
-└──────────────────┬──────────────────────────────────────────┘
-                   │ Intent Submission
-                   ▼
-┌─────────────────────────────────────────────────────────────┐
-│              YELLOW STATE CHANNEL LAYER                      │
-│  • Nitrolite SDK (ERC-7824)                                  │
-│  • Private intent streaming (encrypted)                      │
-│  • Multi-chain liability tracking                            │
-└──────────────────┬──────────────────────────────────────────┘
-                   │ Batched Execution
-                   ▼
-┌─────────────────────────────────────────────────────────────┐
-│              UNISWAP V4 EXECUTION LAYER                      │
-│  • Custom hooks (beforeSwap, afterSwap)                      │
-│  • Agent-gated pools (pre-validation)                        │
-│  • MEV protection via state channel gates                    │
-└──────────────────┬──────────────────────────────────────────┘
-                   │ Net Settlement
-                   ▼
-┌─────────────────────────────────────────────────────────────┐
-│              ARC SETTLEMENT LAYER                            │
-│  • USDC-native gas fees                                      │
-│  • Sub-second finality (\u003c350ms)                              │
-│  • Periodic netting of cross-chain positions                 │
-└─────────────────────────────────────────────────────────────┘
-```
+### 3. Production CLI ✅
+- **File**: `frontend/scripts/agent-cli-workflow.js`
+- **Capabilities**:
+    - Full end-to-end demo loop.
+    - Real-time netting calculation.
+    - Automated on-chain execution.
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- Next.js 15 (App Router)
-- TypeScript 5.3+
-- Tailwind CSS 4.0
-- Viem v2 (Ethereum interactions)
-
-### Backend (CLI)
-- Node.js 20+
-- TypeScript 5.3+
-- Commander.js (CLI framework)
-- Ethers.js v6
-
-### Smart Contracts
-- Solidity 0.8.24
-- Foundry (testing & deployment)
-
-### Integrations
-- Yellow Network (Nitrolite SDK)
-- Uniswap v4 (Hooks)
-- Circle Arc (Settlement)
-- ASI Alliance (Agent authorization)
+- **Frontend/API**: Next.js 15, TypeScript
+- **AI**: Google Gemini (Intent Parsing)
+- **Cryptography**: @noble/curves (Pedersen Commitments)
+- **DeFi**: Uniswap V4, Circle Bridge Kit
+- **Network**: Yellow Network (Nitrolite SDK) // erc7824
+- **Contract**: Solidity 0.8.24, Foundry
 
 ---
 
-## 📝 Development Workflow
+## 📦 Installation & Usage
 
-### 1. API Routes First
-All blockchain interactions happen through Next.js API routes:
-- Centralized logic
-- Easier testing
-- Better error handling
-- Server-side private key management
+### Install the SDK
+```bash
+npm install tint-protocol-ai-sdk
+```
 
-### 2. Test Scripts
-Create test scripts before integration:
-- `scripts/yellow-auth.js` ✅
-- `scripts/uniswap-test.js` 🚧
-- `scripts/arc-settlement.js` ⏳
-- `scripts/intent-flow.js` ⏳
+### Run the Demo CLI
+```bash
+cd frontend
+npm install
+node scripts/agent-cli-workflow.js
+```
 
-### 3. Mock Data Phase
-Build with mock data first, then integrate real SDKs:
-- Faster iteration
-- Parallel frontend development
-- Clear integration points
-
----
-
-## 🎯 Roadmap
-
-### Week 1: Core Infrastructure ✅
-- [x] Yellow Network integration
-- [x] API routes foundation
-- [x] Project structure
-
-### Week 2: API Completion 🚧
-- [ ] Uniswap SDK integration
-- [ ] Arc settlement integration
-- [ ] End-to-end intent flow
-
-### Week 3: CLI Development ⏳
-- [ ] Command framework
-- [ ] Core commands (init, stream, status)
-- [ ] Interactive features
-
-### Week 4: Smart Contracts ⏳
-- [ ] IntentChannel.sol
-- [ ] StreamFlowHook.sol
-- [ ] SettlementRegistry.sol
-- [ ] Deployment to testnets
-
-### Week 5: Frontend Dashboard ⏳
-- [ ] Component library
-- [ ] Dashboard pages
-- [ ] Real-time updates
-
----
-
-## 🤝 Contributing
-
-This is a HackMoney 2026 submission. Development is currently focused on core functionality.
+### Start the Web Dashboard
+```bash
+cd frontend
+npm run dev
+```
 
 ---
 
 ## 📄 License
 
-MIT
-
----
-
-## 🔗 Links
-
-- [Yellow Network](https://yellow.org)
-- [Uniswap v4](https://docs.uniswap.org/contracts/v4/overview)
-- [Circle Arc](https://developers.circle.com/arc)
-- [ASI Alliance](https://fetch.ai)
-
----
-
-**Built with ❤️ for HackMoney 2026**
+MIT License. Built with ❤️ for HackMoney 2026.

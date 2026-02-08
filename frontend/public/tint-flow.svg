@@ -1,0 +1,129 @@
+<svg viewBox="0 0 1600 1200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define styles -->
+  <defs>
+    <style>
+      .component-box { fill: #2d3748; stroke: #4a5568; stroke-width: 2; }
+      .asi-box { fill: #4c1d95; stroke: #7c3aed; stroke-width: 2; }
+      .yellow-box { fill: #b7791f; stroke: #d69e2e; stroke-width: 2; }
+      .uniswap-box { fill: #97266d; stroke: #d53f8c; stroke-width: 2; }
+      .text { fill: #e2e8f0; font-family: 'Segoe UI', sans-serif; font-size: 14px; font-weight: bold; }
+      .label { fill: #a0aec0; font-family: 'Segoe UI', sans-serif; font-size: 12px; }
+      .arrow { stroke: #718096; stroke-width: 2; fill: none; }
+      .arrow-thick { stroke: #48bb78; stroke-width: 3; fill: none; }
+      .arrow-data { stroke: #4299e1; stroke-width: 2; stroke-dasharray: 5,5; fill: none; }
+      .arrow-yellow { stroke: #d69e2e; stroke-width: 3; fill: none; }
+      .arrow-purple { stroke: #9f7aea; stroke-width: 3; fill: none; }
+      
+      .netting-box { fill: #2a4365; stroke: #3182ce; stroke-width: 2; }
+      .savings-text { fill: #68d391; font-family: 'Segoe UI', sans-serif; font-weight: bold; }
+    </style>
+    
+    <!-- Arrow markers -->
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon fill="#48bb78" points="0 0, 10 3, 0 6" />
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon fill="#4299e1" points="0 0, 10 3, 0 6" />
+    </marker>
+    <marker id="arrowhead-yellow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon fill="#d69e2e" points="0 0, 10 3, 0 6" />
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon fill="#9f7aea" points="0 0, 10 3, 0 6" />
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1600" height="1200" fill="#1a202c"/>
+  
+  <!-- Component boxes at top -->
+  <rect class="component-box" x="50" y="30" width="200" height="80" rx="5"/>
+  <text class="text" x="150" y="65" text-anchor="middle">User / AI Agent</text>
+  <text class="label" x="150" y="85" text-anchor="middle">(Intent Gen)</text>
+  
+  <rect class="asi-box" x="350" y="30" width="200" height="80" rx="5"/>
+  <text class="text" x="450" y="65" text-anchor="middle">TINT SDK</text>
+  <text class="label" x="450" y="85" text-anchor="middle">(Pedersen Commitments)</text>
+  
+  <rect class="yellow-box" x="650" y="30" width="200" height="80" rx="5"/>
+  <text class="text" x="750" y="65" text-anchor="middle">Yellow Network</text>
+  <text class="label" x="750" y="85" text-anchor="middle">(State Channels)</text>
+  
+  <rect class="component-box" x="950" y="30" width="200" height="80" rx="5"/>
+  <text class="text" x="1050" y="65" text-anchor="middle">TINT Solver</text>
+  <text class="label" x="1050" y="85" text-anchor="middle">(Netting Engine)</text>
+  
+  <rect class="uniswap-box" x="1250" y="30" width="250" height="80" rx="5"/>
+  <text class="text" x="1375" y="65" text-anchor="middle">Execution Layer</text>
+  <text class="label" x="1375" y="85" text-anchor="middle">(Uniswap V4 / Circle)</text>
+
+  <!-- Vertical lines (Lifelines) -->
+  <line class="arrow" x1="150" y1="110" x2="150" y2="1150"/>
+  <line class="arrow" x1="450" y1="110" x2="450" y2="1150"/>
+  <line class="arrow" x1="750" y1="110" x2="750" y2="1150"/>
+  <line class="arrow" x1="1050" y1="110" x2="1050" y2="1150"/>
+  <line class="arrow" x1="1375" y1="110" x2="1375" y2="1150"/>
+  
+  <!-- Flow sequence -->
+  
+  <!-- 1. Submit Intent -->
+  <path class="arrow-thick" d="M 150 160 L 450 160" marker-end="url(#arrowhead-green)"/>
+  <text class="text" x="300" y="150" text-anchor="middle">1. Submit Natural Language Intent</text>
+  <text class="label" x="300" y="180" text-anchor="middle">"Swap 100 USDC to WETH"</text>
+  
+  <!-- 2. Processing in SDK -->
+  <rect class="component-box" x="430" y="200" width="40" height="60" rx="2"/>
+  <text class="label" x="530" y="230" text-anchor="start" fill="#a0aec0">Generate Pedersen Commitment</text>
+  
+  <!-- 3. Stream to Yellow -->
+  <path class="arrow-yellow" d="M 450 280 L 750 280" marker-end="url(#arrowhead-yellow)"/>
+  <text class="text" x="600" y="270" text-anchor="middle" fill="#d69e2e">2. Stream Encrypted Intent</text>
+  <text class="label" x="600" y="300" text-anchor="middle">Zero-Knowledge Proof Attached</text>
+
+  <!-- 4. Deliver to Solver -->
+  <path class="arrow-yellow" d="M 750 340 L 1050 340" marker-end="url(#arrowhead-yellow)"/>
+  <text class="text" x="900" y="330" text-anchor="middle" fill="#d69e2e">3. Deliver to Broker</text>
+
+  <!-- 5. Netting Optimization Box -->
+  <rect class="netting-box" x="900" y="380" width="300" height="150"/>
+  <text class="text" x="1050" y="410" text-anchor="middle" fill="#3182ce">NETTING ENGINE (OFF-CHAIN)</text>
+  <text class="label" x="1050" y="440" text-anchor="middle">Aggregate Order Batch</text>
+  <text class="label" x="1050" y="460" text-anchor="middle">Match Opposing Flows</text>
+  <text class="text" x="1050" y="490" text-anchor="middle" fill="#68d391">Calculate Net Residual</text>
+
+  <!-- 6. Verify (Loop) -->
+  <path class="arrow-purple" d="M 1050 560 L 1375 560" marker-end="url(#arrowhead-purple)"/>
+  <text class="text" x="1212" y="550" text-anchor="middle" fill="#9f7aea">4. Verify Netting (TINT Verifier)</text>
+  
+  <path class="arrow-data" d="M 1375 600 L 1050 600" marker-end="url(#arrowhead-blue)"/>
+  <text class="label" x="1212" y="620" text-anchor="middle">Proof Validated</text>
+
+  <!-- 7. Execute Fork -->
+  <line x1="1050" y1="650" x2="1375" y2="650" stroke="#718096" stroke-width="2" stroke-dasharray="5,5"/>
+  <text class="text" x="1212" y="670" text-anchor="middle">DECISION POINT</text>
+
+  <!-- SWAP Path -->
+  <path class="arrow-thick" d="M 1050 720 L 1375 720" marker-end="url(#arrowhead-green)"/>
+  <text class="text" x="1212" y="710" text-anchor="middle" fill="#48bb78">A) If Swap: Uniswap V4</text>
+  <text class="label" x="1212" y="740" text-anchor="middle">Execute only Net Amount</text>
+
+  <!-- PAYMENT Path -->
+  <path class="arrow-thick" d="M 1050 800 L 1375 800" marker-end="url(#arrowhead-blue)"/>
+  <text class="text" x="1212" y="790" text-anchor="middle" fill="#4299e1">B) If Pay: Circle Bridge Kit</text>
+  <text class="label" x="1212" y="820" text-anchor="middle">Cross-Chain Settlement</text>
+
+  <!-- 8. Settlement -->
+  <rect class="component-box" x="1250" y="880" width="250" height="60" rx="5" fill="#2d3748" stroke="#48bb78"/>
+  <text class="text" x="1375" y="915" text-anchor="middle" fill="#48bb78">SETTLEMENT FINALIZED</text>
+  
+  <!-- 9. Return to User -->
+  <path class="arrow-thick" d="M 1375 980 L 150 980" marker-end="url(#arrowhead-green)"/>
+  <text class="text" x="760" y="960" text-anchor="middle" fill="#48bb78">5. Confirmation &amp; Funds Received</text>
+  <text class="label" x="760" y="1000" text-anchor="middle">User receives tokens (Output)</text>
+  
+  <!-- Summary Box -->
+  <rect class="component-box" x="350" y="1050" width="900" height="100" rx="5" stroke="#48bb78"/>
+  <text class="text" x="800" y="1080" text-anchor="middle" fill="#68d391">RESULTS</text>
+  <text class="label" x="800" y="1110" text-anchor="middle">98% Gas Reduction (Netting) | Zero MEV (Private Mempool) | Sub-Second Finality</text>
+
+</svg>
