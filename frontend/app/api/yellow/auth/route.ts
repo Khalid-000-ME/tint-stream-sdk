@@ -51,8 +51,9 @@ export async function POST(request: NextRequest) {
         const walletClient = createWalletClient({ chain: authRpcObj.chain, transport: http(authRpcObj.rpc), account: mainAccount });
 
         const client = new NitroliteClient({
-            publicClient, walletClient,
-            stateSigner: new WalletStateSigner(walletClient),
+            publicClient: publicClient as any,
+            walletClient: walletClient as any,
+            stateSigner: new WalletStateSigner(walletClient as any),
             addresses: { custody: '0x019B65A265EB3363822f2752141b3dF16131b262', adjudicator: '0x7c7ccbc98469190849BCC6c926307794fDfB11F2' },
             chainId: authRpcObj.chain.id,
             challengeDuration: BigInt(3600),

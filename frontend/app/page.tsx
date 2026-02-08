@@ -2,128 +2,185 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui';
+import { useState } from 'react';
+import { Navbar } from '@/components/Navbar';
 
-export default function HomePage() {
+export default function LandingPage() {
+  const [activeTab, setActiveTab] = useState<'install' | 'usage'>('install');
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-cyan-500/30">
+      <Navbar />
+
       {/* Hero Section */}
-      <div className="min-h-screen flex flex-col items-center justify-center p-8">
-        <div className="max-w-5xl mx-auto text-center">
-          {/* ASCII Art Logo */}
-          <pre className="text-[#FFEB3B] text-xs md:text-sm mb-8 font-mono overflow-x-auto">
-            {`
-██╗███╗   ██╗████████╗███████╗███╗   ██╗████████╗
-██║████╗  ██║╚══██╔══╝██╔════╝████╗  ██║╚══██╔══╝
-██║██╔██╗ ██║   ██║   █████╗  ██╔██╗ ██║   ██║   
-██║██║╚██╗██║   ██║   ██╔══╝  ██║╚██╗██║   ██║   
-██║██║ ╚████║   ██║   ███████╗██║ ╚████║   ██║   
-╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝   ╚═╝   
-                                                  
-███████╗████████╗██████╗ ███████╗ █████╗ ███╗   ███╗
-██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔══██╗████╗ ████║
-███████╗   ██║   ██████╔╝█████╗  ███████║██╔████╔██║
-╚════██║   ██║   ██╔══██╗██╔══╝  ██╔══██║██║╚██╔╝██║
-███████║   ██║   ██║  ██║███████╗██║  ██║██║ ╚═╝ ██║
-╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝
-`}
-          </pre>
+      <section className="relative pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
 
-          <h1 className="text-5xl md:text-7xl font-mono font-bold uppercase mb-6">
-            THE VISA NETWORK<br />FOR AI AGENT TRADING
-          </h1>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold mb-8 animate-fade-in-up">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+          v1.0.0 Public Release
+        </div>
 
-          <p className="text-xl md:text-2xl font-mono mb-12 text-gray-400">
-            MEV-PROOF • SUB-SECOND • USDC-NATIVE
-          </p>
+        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+          TINT Protocol SDK
+        </h1>
 
-          <div className="flex gap-4 justify-center mb-16">
-            <Link href="/dashboard">
-              <Button variant="primary" className="text-lg px-12 h-16">
-                LAUNCH DASHBOARD
-              </Button>
-            </Link>
-            <Link href="/yellow-official">
-              <Button variant="secondary" className="text-lg px-12 h-16">
-                YELLOW NETWORK
-              </Button>
-            </Link>
+        <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mb-10 leading-relaxed">
+          The first <span className="text-cyan-400 font-bold">Privacy-Preserving Intent Standard</span> for AI Agents.
+          Stream encrypted swaps, net off-chain, and settle on Uniswap V4.
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-6 mb-20">
+          <Link href="/final-stream-uniswap">
+            <Button variant="primary" className="text-lg px-8 py-6 h-auto shadow-[0_0_30px_-5px_rgba(6,182,212,0.4)]">
+              Launch Agent Demo
+            </Button>
+          </Link>
+          <a href="https://www.npmjs.com/package/tint-protocol-ai-sdk" target="_blank" rel="noopener noreferrer">
+            <Button variant="secondary" className="text-lg px-8 py-6 h-auto bg-gray-900 border-gray-800 hover:bg-gray-800">
+              View on NPM
+            </Button>
+          </a>
+        </div>
+
+        {/* Code Preview */}
+        <div className="w-full max-w-4xl bg-[#0a0a0a] border border-gray-800 rounded-3xl overflow-hidden shadow-2xl text-left">
+          <div className="flex items-center gap-4 px-6 py-4 border-b border-gray-800 bg-gray-900/50">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/20 box-content border border-red-500/30" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/20 box-content border border-yellow-500/30" />
+              <div className="w-3 h-3 rounded-full bg-green-500/20 box-content border border-green-500/30" />
+            </div>
+            <div className="flex gap-4 ml-6 font-mono text-sm">
+              <button
+                onClick={() => setActiveTab('install')}
+                className={`transition-colors ${activeTab === 'install' ? 'text-cyan-400 font-bold' : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                install
+              </button>
+              <button
+                onClick={() => setActiveTab('usage')}
+                className={`transition-colors ${activeTab === 'usage' ? 'text-cyan-400 font-bold' : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                quick-start.ts
+              </button>
+            </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="border-2 border-[#FFEB3B] p-6">
-              <div className="text-5xl font-mono font-bold text-[#FFEB3B] mb-2">&lt;1s</div>
-              <div className="text-sm font-mono uppercase">Execution Time</div>
-            </div>
-            <div className="border-2 border-[#00FF00] p-6">
-              <div className="text-5xl font-mono font-bold text-[#00FF00] mb-2">0%</div>
-              <div className="text-sm font-mono uppercase">MEV Loss</div>
-            </div>
-            <div className="border-2 border-[#FF007A] p-6">
-              <div className="text-5xl font-mono font-bold text-[#FF007A] mb-2">98%</div>
-              <div className="text-sm font-mono uppercase">Cost Reduction</div>
-            </div>
+          <div className="p-6 font-mono text-sm overflow-x-auto">
+            {activeTab === 'install' ? (
+              <div className="text-gray-300">
+                <span className="text-cyan-400">$</span> npm install tint-protocol-ai-sdk ethers @google/generative-ai
+              </div>
+            ) : (
+              <pre className="text-gray-300 pointer-events-none select-none">
+                <code>
+                  {`import { TintClient } from 'tint-protocol-ai-sdk';
+
+const tint = new TintClient({
+  privateKey: process.env.PRIVATE_KEY,
+  geminiKey: process.env.GEMINI_API_KEY,
+  rpcUrl: 'https://sepolia.base.org'
+});
+
+// Execute Natural Language Intent
+const result = await tint.processNaturalLanguage(
+  "Swap 100 USDC to WETH on Base"
+);
+
+console.log(\`Tx Hash: \${result.txHash}\`);`}
+                </code>
+              </pre>
+            )}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* How It Works */}
-      <div className="border-t-4 border-[#FFEB3B] py-20 px-8">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-4xl font-mono font-bold uppercase mb-12 text-center text-[#FFEB3B]">
-            HOW IT WORKS
-          </h2>
+      {/* Features Grid */}
+      <section className="py-20 px-6 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <FeatureCard
+              icon="🔒"
+              title="Cryptographic Privacy"
+              desc="Intents are shielded using Pedersen Commitments. Solvers match orders without seeing amounts."
+            />
+            <FeatureCard
+              icon="⚡"
+              title="Sub-Second Netting"
+              desc="Yellow Network state channels allow for high-frequency intent matching before on-chain settlement."
+            />
+            <FeatureCard
+              icon="🦄"
+              title="Uniswap V4 Settlement"
+              desc="Residual flow is executed atomically on Uniswap V4 hooks, guaranteeing best execution."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Setup Guide (Getting Started) */}
+      <section className="py-20 px-6 bg-gray-900/30 border-t border-gray-800">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">Getting Started</h2>
 
           <div className="space-y-8">
-            <div className="border-2 border-white p-6">
-              <div className="text-[#FFEB3B] font-mono font-bold mb-2">1. YELLOW STATE CHANNELS</div>
-              <div className="font-mono">Private mempool for agent intents. 100,000+ TPS, fully encrypted.</div>
-            </div>
-
-            <div className="border-2 border-white p-6">
-              <div className="text-[#FF007A] font-mono font-bold mb-2">2. UNISWAP V4 HOOKS</div>
-              <div className="font-mono">MEV-resistant execution gates. Only pre-validated intents can trade.</div>
-            </div>
-
-            <div className="border-2 border-white p-6">
-              <div className="text-[#00FF00] font-mono font-bold mb-2">3. ARC SETTLEMENT</div>
-              <div className="font-mono">USDC-native finality in 350ms. Predictable costs for agent budgets.</div>
-            </div>
-
-            <div className="border-2 border-white p-6">
-              <div className="text-white font-mono font-bold mb-2">4. ASI AGENTS</div>
-              <div className="font-mono">Autonomous payment executors with secure authorization.</div>
-            </div>
+            <Step
+              num="01"
+              title="Get API Keys"
+              desc={
+                <span>
+                  You'll need a <a href="https://aistudio.google.com/app/apikey" target="_blank" className="text-cyan-400 hover:underline">Gemini API Key</a> for the Agent and a wallet Private Key.
+                </span>
+              }
+            />
+            <Step
+              num="02"
+              title="Configure Agents"
+              desc="Set your GEMINI_API_KEY in the .env file to enable the specific AI parsing capabilities."
+            />
+            <Step
+              num="03"
+              title="Run Verification"
+              desc="Use the SDK to submit a test intent on Base Sepolia. The TINT Verifier will validate the ZK proof."
+            />
           </div>
         </div>
-      </div>
-
-      {/* CTA */}
-      <div className="border-t-4 border-[#FFEB3B] py-20 px-8 text-center">
-        <h2 className="text-4xl font-mono font-bold uppercase mb-6">
-          READY TO STREAM?
-        </h2>
-        <p className="text-xl font-mono mb-8 text-gray-400">
-          Join the future of MEV-proof DeFi execution
-        </p>
-        <Link href="/dashboard">
-          <Button variant="primary" className="text-xl px-16 h-20">
-            GET STARTED
-          </Button>
-        </Link>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t-2 border-gray-800 py-8 px-8">
-        <div className="max-w-5xl mx-auto flex justify-between items-center font-mono text-sm">
-          <div>© 2026 INTENT-STREAM-SDK</div>
-          <div className="flex gap-6">
-            <a href="https://yellow.org" className="hover:text-[#FFEB3B]">YELLOW NETWORK</a>
-            <a href="https://uniswap.org" className="hover:text-[#FF007A]">UNISWAP</a>
-            <a href="https://circle.com/arc" className="hover:text-[#00FF00]">CIRCLE ARC</a>
-          </div>
+      <footer className="border-t border-gray-800 py-12 px-6 text-center text-gray-500 text-sm">
+        <p>© 2026 TINT Protocol. Open Source MIT License.</p>
+        <div className="flex justify-center gap-6 mt-4">
+          <a href="#" className="hover:text-white">Documentation</a>
+          <a href="#" className="hover:text-white">GitHub</a>
+          <a href="#" className="hover:text-white">NPM</a>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, desc }: { icon: string, title: string, desc: string }) {
+  return (
+    <div className="bg-gray-900/50 p-8 rounded-3xl border border-gray-800 hover:border-cyan-500/30 transition-all">
+      <div className="text-4xl mb-4">{icon}</div>
+      <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
+      <p className="text-gray-400 leading-relaxed">{desc}</p>
+    </div>
+  );
+}
+
+function Step({ num, title, desc }: { num: string, title: string, desc: React.ReactNode }) {
+  return (
+    <div className="flex gap-6 items-start">
+      <div className="text-2xl font-black text-gray-800 bg-white/5 w-16 h-16 rounded-2xl flex items-center justify-center shrink-0">
+        {num}
+      </div>
+      <div>
+        <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+        <p className="text-gray-400 leading-relaxed">{desc}</p>
+      </div>
     </div>
   );
 }
