@@ -128,7 +128,7 @@ const client = new NitroliteClient({
         adjudicator: '0x7c7ccbc98469190849BCC6c926307794fDfB11F2',
     },
     chainId: sepolia.id,
-    challengeDuration: 3600n, // 1 hour challenge period
+    challengeDuration: BigInt(3600), // 1 hour challenge period
 });
 
 console.log('✓ Client initialized');
@@ -185,7 +185,7 @@ const triggerResize = async (channelId: string, token: string, skipResize: boole
     // We use 'allocate_amount' to move funds from the User's Unified Balance (off-chain)
     // into the Channel. This assumes the user has funds in their Unified Balance (e.g. from faucet).
 
-    const amountToFund = 20n;
+    const amountToFund = BigInt(20);
     if (!skipResize) console.log('\nRequesting resize to fund channel with 20 tokens...');
 
     if (!skipResize) {
@@ -242,7 +242,7 @@ const triggerResize = async (channelId: string, token: string, skipResize: boole
     console.log(`✓ Channel funded with ${channelBalances[0]} USDC`);
 
     // Check User Balance again
-    let finalUserBalance = 0n;
+    let finalUserBalance = BigInt(0);
     try {
         const result = await publicClient.readContract({
             address: client.addresses.custody,
@@ -342,7 +342,7 @@ ws.onmessage = async (event) => {
             // Wait, standard RPC returns strings. Let's rely on openChannel structure.
             // openChannel object from logs: { ..., amount: "40", ... }
 
-            if (BigInt(openChannel.amount) >= 20n) {
+            if (BigInt(openChannel.amount) >= BigInt(20)) {
                 console.log(`  Channel already funded with ${openChannel.amount} USDC.`);
                 console.log('  Skipping resize to avoid "Insufficient Balance" errors.');
                 // Call triggerResize but indicate skipping actual resize
@@ -448,12 +448,12 @@ ws.onmessage = async (event) => {
         const requiredAmount = resizeState.allocations.reduce((sum: bigint, a: any) => {
             if (a.token === token) return sum + BigInt(a.amount);
             return sum;
-        }, 0n);
+        }, BigInt(0));
 
         console.log(`  Waiting for channel funding (Required: ${requiredAmount})...`);
 
         // Poll for User's Custody Balance (since User allocation is increasing)
-        let userBalance = 0n;
+        let userBalance = BigInt(0);
         let retries = 0;
         const userAddress = client.account.address;
 
@@ -624,7 +624,7 @@ ws.onmessage = async (event) => {
 
         await new Promise(r => setTimeout(r, 2000)); // Wait for close to settle
 
-        let withdrawableBalance = 0n;
+        let withdrawableBalance = BigInt(0);
         try {
             const result = await publicClient.readContract({
                 address: client.addresses.custody,
@@ -644,7 +644,7 @@ ws.onmessage = async (event) => {
             console.warn('    Error checking withdrawable balance:', e);
         }
 
-        if (withdrawableBalance > 0n) {
+        if (withdrawableBalance > BigInt(0)) {
             console.log(`  Withdrawing ${withdrawableBalance} of ${token}...`);
             const withdrawalTx = await client.withdrawal(token as `0x${string}`, withdrawableBalance);
             console.log('✓ Funds withdrawn:', withdrawalTx);

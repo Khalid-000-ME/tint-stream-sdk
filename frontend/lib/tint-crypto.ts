@@ -73,15 +73,15 @@ export class NettingEngine {
      * @returns Net position and efficiency metrics
      */
     computeNetPosition(sellIntents: bigint[], buyIntents: bigint[]): NetResult {
-        const totalSell = sellIntents.reduce((sum, amount) => sum + amount, 0n);
-        const totalBuy = buyIntents.reduce((sum, amount) => sum + amount, 0n);
+        const totalSell = sellIntents.reduce((sum, amount) => sum + amount, BigInt(0));
+        const totalBuy = buyIntents.reduce((sum, amount) => sum + amount, BigInt(0));
 
         const residual = totalSell > totalBuy ? totalSell - totalBuy : totalBuy - totalSell;
         const direction = totalSell > totalBuy ? 'SELL' : 'BUY';
 
         const totalVolume = totalSell + totalBuy;
         const nettedVolume = totalVolume - residual;
-        const efficiency = totalVolume > 0n ? Number((nettedVolume * 10000n) / totalVolume) / 100 : 0;
+        const efficiency = totalVolume > BigInt(0) ? Number((nettedVolume * BigInt(10000)) / totalVolume) / 100 : 0;
 
         return {
             totalSell,

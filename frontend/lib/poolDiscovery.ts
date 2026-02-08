@@ -61,7 +61,7 @@ export async function findBestPool(
             const [sqrtPriceX96, tick] = await poolManager.getSlot0(poolId);
             const liquidity = await poolManager.getLiquidity(poolId);
 
-            if (sqrtPriceX96 > 0n && liquidity > 0n) {
+            if (sqrtPriceX96 > BigInt(0) && liquidity > BigInt(0)) {
                 pools.push({
                     poolId,
                     fee,
