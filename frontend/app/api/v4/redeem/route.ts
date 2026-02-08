@@ -54,7 +54,7 @@ export async function POST(req: Request) {
             amountToRedeem = ethers.parseUnits(amount, decimals);
         }
 
-        if (amountToRedeem === 0n) {
+        if (amountToRedeem === BigInt(0)) {
             return NextResponse.json({ success: false, error: "No claims to redeem" });
         }
 
